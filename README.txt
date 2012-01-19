@@ -11,5 +11,7 @@ On MAC OSX machines:
 
 Preconditions
 =======================================
-- have at least python 2.7 installed (maybe older, but not tested)
-- have swig installed
+- have at least python 2.7 installed (maybe older, but not tested. for other verisons please change line in makefile)
+	get it here: http://python.org/download/releases/2.7.2/
+- have swig installed (http://www.swig.org/exec.html)
+	get swig here: http://www.swig.org/download.html

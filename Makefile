@@ -1,5 +1,5 @@
 all:
-	gcc -Wall fau_timer.c -o fau_timer -O2
+	@echo "please start with 'make linux' or 'make osx' depending which os you're running"
         
 linux:
 	swig -python fau_timer.i
