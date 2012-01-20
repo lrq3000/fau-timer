@@ -42,6 +42,7 @@ for i in range(times):
         print "Request %i: Response: %s" % (i, response)
 
         # Write to output file (number_of_request, secret, number_of_ticks)
+        print "Writing time to output.csv"
         f.write("%i;the_secret;%s\n" % (i, cpuTicks)) 
 
 # Close output file       
