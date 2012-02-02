@@ -6,6 +6,8 @@ Preconditions
 	get it here: http://python.org/download/releases/2.7.2/
 - have swig installed (http://www.swig.org/exec.html)
 	get swig here: http://www.swig.org/download.html
+- python-dev is required to build a python module from fau_timer.c
+
 
 How to build Python module of fau_timer.c
 =======================================

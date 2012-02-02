@@ -115,6 +115,7 @@ void send_request(char* ip, int port_no, char* request){
 	int sockfd, n, len;
 	struct hostent *server;
 	struct sockaddr_in serv_addr;
+	ticks start_ticks, end_ticks;
 	
 	if(port_no <= 0){
 		error("ERROR wrong port number");
@@ -142,8 +143,9 @@ void send_request(char* ip, int port_no, char* request){
 	// Write all but the very last byte	
 	len = strlen(request);
 	n = write(sockfd, request, len - 1);
+
 	// Start the timer...
-	ticks start_ticks = get_ticks();
+	start_ticks = get_ticks();
 	// Now send the last byte, which also starts processing at server side.
 	n = write(sockfd, request + len - 1, 1);
 	if (n < 0){
@@ -151,7 +153,7 @@ void send_request(char* ip, int port_no, char* request){
 	}
 	n = read(sockfd, receive_buffer, BUFSIZE - 1);
         // Stop the timer
-	ticks end_ticks = get_ticks();
+	end_ticks = get_ticks();
 	cpu_ticks = end_ticks - start_ticks;
 
 	close(sockfd);
