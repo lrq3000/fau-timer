@@ -7,7 +7,8 @@ Preconditions
 - installed Java JDK and Apache ANT 
 - installed pdflatex, makeindex (e.g. from miktex on windows)
 - installed gnuplot
-- to use the search function of the required programs, go to windows environment and add the necessary directories of your gnuplot/pdflatex/makeindex to the PATH variable or use the config.ini to give the path to the required programs
+- to use the search function FOR the required programs, go to windows environment and add the necessary directories of your gnuplot/pdflatex/makeindex to the PATH variable or use the config.ini to give the path to the required programs
+- windows: in order to be able to compile reporting tool using Apache ANT you need the system varible JAVA_HOME pointing to your java jdk path
 
 How to build the jar of the Reporting Tool
 ------------------------------------------
