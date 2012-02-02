@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project Reporting Tool">
+    <target name="create_run_jar">
+        <jar destfile="ReportingTool.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="reportingTool.ReportingTool"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/poi-3.7-20101029.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/ini4j-0.5.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/JSAP-2.1.jar"/>
+        </jar>
+    </target>
+</project>
