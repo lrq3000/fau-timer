@@ -420,9 +420,9 @@ public class Conf {
 	 */
 	private File findMakeIndex() {
 		if (System.getProperty("os.name").toLowerCase().indexOf("windows") == -1) {
-			return findExecutable("makeIndex");
+			return findExecutable("makeindex");
 		} else {
-			return findExecutable("makeIndex.exe");
+			return findExecutable("makeindex.exe");
 		}
 	}
 

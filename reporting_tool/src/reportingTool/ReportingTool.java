@@ -35,7 +35,7 @@ public class ReportingTool {
 
 	/**
 	 * This method checks if the dir already exists. 
-	 * When it doesn´t exist, this method creates a new folder.
+	 * When it doesn't exist, this method creates a new folder.
 	 * 
 	 * @param dir String of folder to be checked
 	 */
@@ -49,7 +49,7 @@ public class ReportingTool {
 			if (success) {
 				logger.info("\nFolder \"" + dir + "\" was created successfully.\n");
 			} else {
-				logger.warning("Error: Folder " + dir + " wasn´t created successfully.");
+				logger.warning("Error: Folder " + dir + " wasn't created successfully.");
 				System.exit(1);
 			}
 		}
