@@ -1,0 +1,213 @@
+\title{FauTimerReport}
+\author{
+        Sebastian Schinzel
+            \and
+        Isabell Schmitt
+}
+\date{\today}
+
+\documentclass[12pt]{article}
+
+\usepackage{amssymb}
+\usepackage{nth}
+
+\usepackage{color}
+\usepackage{marginnote}
+\newcommand{\id}[1]{\mbox{\textit{#1}}}
+\newcommand{\todo}[1]{\textcolor{red}{\marginnote{TODO} To Do: #1}}
+
+\begin{document}
+\maketitle
+
+% %\begin{abstract}
+% %This is the paper's abstract \ldots
+% %\end{abstract}
+% %
+% %\section{Introduction}
+% %A timing attack gets increasingly more dangerous the fewer measurements the attacker
+% %has to perform. Crosby, Wallach, and Riedi \cite{bib:crosby} studied different 
+% %hypothesis tests and their suitability for analysing differences timing measurements.
+% %They proposed and informally described the \emph{box test}, which performed best 
+% %in their analysis.
+% %
+% %In the following, we formalize the box test and propose an algorithm that finds the minimum amount
+% %of timing measurements required for the box test to still find differences. This
+% %is important information for the attacker because the fewer measurements are required,
+% %the smaller the risk for the attacker that the attack is either detected or prevented.
+% %
+% %\todo{Mention that exact timing measurements are difficult because of noise}
+% %
+% %\section{Model}
+% %\subsection{Definitions}
+% %A timing side channel appears if the response time $t\in T$ of a procedure depends on a secret
+% %value $s\in S$ that the procedure accesses. As the 
+% %
+% %% Let $a\in A$ and $b\in B$ be two measurements of the form $(n,t,s)$, where $n\in \mathbb{N}$ is
+% %% the $n^{th}$ measurement of the timing $t\in T$. The timing was measured 
+% %% using a secret $s\in S$.
+% %
+% %A percentile $p\in P: 0 \leq p < 100$ denotes a single timing $t$ that is referenced by its rank
+% %in the sorted measurement $m$ by $n=\frac{P|m|}{100}+\frac{1}{2}$, where $|m|$ denotes the number
+% %of timings in $m$. Take the measurement $m_1=\langle 0,1,2,3,4,5,6,7,8,9 \rangle$ as an example. The
+% %$\nth{15}$ percentile ($p=15$) is $\frac{15*10}{100}+\frac{1}{2}=2$ and the $\nth{2}$ rank in $m_1$
+% %is $1$. The $\nth{65}$ percentile is denoted by the $\frac{65*10}{100}+\frac{1}{2}=\nth{7}$ rank in
+% %$m_1$, which is $6$.
+% %
+% %A box is a function $b(p_i, p_j, m) \to m_b$ where $i,j\in \mathbb{N}: 0 \leq i < j < |m|$, $p_i$ is the lower percentile and
+% %$p_j$ is the upper percentile of the box. The box returns the subset of measurements $m_b \subseteq m$
+% %that is between the lower percentile and the upper percentile.
+% %For example, $b(15,65,\langle 0,1,2,3,4,5,6,7,8,9 \rangle)$ results in the subset
+% %$b=\langle 2,3,4,5,6 \rangle$. 
+% %
+% %A box test $\id{bt}(m_1, m_2, p_i, p_j) \to {\texttt{true}|\texttt{false}}$ takes two different timing measurements $m_1$, $m_2$ 
+% %and the box $b$ as parameter. It returns $\texttt{true}$ if $m_{b1}=b(p_i, p_j, m_1$ and $m_{b2}=b(p_i, p_j, m_2)$ do not
+% %overlap, i.e.\ $m_{b1}\cap m_{b2}=\emptyset$. 
+% %
+% %\subsection{Box Test Calibration}
+% %The box test takes the lower and the upper percentiles ($p_i$, $p_j$) as parameter
+% %and in this section, we describe an algorithm that searches for the ideal parameters.
+% %Furthermore, 
+% %\pagebreak
+% %
+% %
+\section{FAUTimer Algorithm}
+\subsection{Definitions}
+ 
+\begin{itemize}
+  \item A measurement set $A$ is a set of $n$ tuples $A\in M: A=\langle(i_1,s,t_1), (i_2,s,t_2), \ldots, (n,s,t_n)\rangle$ where
+    $i\in \mathbb{N}: 1 \leq i \leq n$ is a unique index, $t\in T$ is a timing measurement and $s\in S$ is a secret value
+    under which $t$ was measured. In the following, we assume that the there are two different 
+    measurement sets
+    $A,B\in M: A=\langle (1,s_1,t_1), (2,s_1,t_3), \ldots (n,s_1,t_{2n-1})\rangle \land B=\langle(1,s_2,t_2), (2,s_2,t_4), \ldots, (n,s_2,t_{2n})\rangle
+    \land s_1\neq s_2$ that are sorted by the index in ascending order. Furthermore, the notation $\hat{A}$ denotes a measurement set
+    $A$ that is sorted by $t$ in ascending order.
+
+  \item A subset of the measurement $A_{u,v}\in A$ starts at position $u$ in the measurement set $A$, which
+  is sorted by the index, and ends at position $v$. For example, let 
+  $A=\langle (1,s_1,t_1), (2,s_1,t_2), \ldots (100,s_1,t_{100})\rangle$ and $|A|=100$, then 
+  $A_{50,100}=\langle (50,s_1,t_{50}), (51,s_1,t_{51}), \ldots (100,s_1,t_{100})\rangle$ and $|A_{50,100}|=50$.
+
+  \item A \emph{percentile} is a function $p(\hat{A}, q)\to t$ (abbreviated $\hat{A}_{[q]} \to t$) that takes a measurement
+    set $\hat{A}$ that is sorted by the timing values in ascending order and an index
+    $q\in \mathbb{N}: 0 \leq q \leq 100$. It returns a single timing measurement $t$ whose
+    actual rank $x$ is determined by
+    \begin{equation}
+    x=\left\{
+      \begin{array}{rl} 
+        \frac{i}{100}|\hat{A}| & \id{ if } q < 100\\
+             |\hat{A}| -1      & \id{ if } q = 100\\
+      \end{array} \right.
+    \end{equation}
+    As an example, let
+    $\hat{A}=\langle (1,s,2), (2,s,4), (3,s,6), \ldots, (1000,s,2000)\rangle $ and $|\hat{A}|=1000$, then $\hat{A}_{[0]}=2$, $\hat{A}_{[57]}=114$, $\hat{A}_{[99]}=1980$, and $\hat{A}_{[100]}=2000$.
+
+  \item A \emph{box} is a function $b(\hat{A}_{p_l,p_h}) \to \hat{A}_{[p_l,p_h]}$ that takes a sorted measurement set $\hat{A}\in M$ and the
+    two percentile indices
+    $p_l,p_h\in \mathbb{N}: 0 \leq p_l < p_h \leq 100$ as parameters. It returns a measurement set $\hat{A}_{[p_l,p_h]}\subseteq A$
+    which contains all tuples $(p_l,s,t): \hat{A}_{[p_l]}\leq t \leq \hat{A}_{[p_h]}$.\\
+    If you take the former $\hat{A}$ as an example,
+    then $\hat{A}_{[5,8]}=\langle (5,s,10),(6,s,12),(7,s,14),(8,s,18) \rangle$.
+
+  \item A \emph{box test} is a function $\id{bt}(\hat{A}, \hat{B}, p_l, p_h) \to \{\id{true}|\id{false}\}$ that takes two
+    sorted measurement sets $\hat{A},\hat{B}$ and two percentile indices and returns whether the timing
+    measurements in $\hat{A},\hat{B}$ are significantly different (\id{true}), or not (\id{false}).
+    The test works as follows:
+    \begin{enumerate}
+        \item apply the box to both measurement sets, i.e.\ $b(\hat{A},p_l,p_h)=\hat{A}_{[p_l,p_h]}$ and $b(\hat{B},p_l,p_h)=\hat{B}_{[p_l,p_h]}$.
+        \item check whether the timings in both subsets overlap, i.e. $\hat{A}_{[p_l]} < \hat{B}_{[p_h]}$ and $\hat{B}_{[p_l]} < \hat{A}_{[p_h]}$.
+        \item if they overlap, then no significant timing differences were detected, and the box test returns \id{false}.
+        \item if they do not overlap, then a significant timing differences was detected, and the box test returns \id{true}.
+    \end{enumerate}
+
+ \end{itemize}
+
+
+\subsection{Calibration Phase}
+The calibration algorithm returns two results:
+\begin{itemize}
+  \item the two percentile indices of the optimal box ($p_l$, $p_h$),
+  \item the approximate minimum amount of required measurements for the box test to return significant differences.
+\end{itemize}
+
+\begin{enumerate}
+\item Read the timing measurements and split them according to the secret. We assume here that there are two secrets and thus two measurement sets $A,B\in M$.
+
+\item We assume in the following that $\hat{A}, \hat{B}$ are sorted by the timings in ascending order.
+
+\item Approximate minimum amount of required timing measurements:\\
+  Loop over all possible boxes with $p_l,p_h\in \mathbb{N}: 0 \leq p_l < p_h \leq 100$,
+  example:\\ $(0,1), (0,2), \ldots (0,100), (1,2), (1,3), \ldots, (1,100), (2,3), \ldots, (99,100)$:
+  \begin{enumerate}
+    \item perform the box test, i.e. $\id{bt}(\hat{A}, \hat{B}, [p_l], [p_h])$.
+    \item If the box test returns \id{false}, continue in the
+      loop with the next box. If the loop is finished, go to step 4.
+    \item If the box test returns \id{true}, perform the following steps:
+      \begin{itemize}
+        \item \textcolor{red}{discard the residual boxes in this iteration of the loop.}
+        \item Remove the first half of the measurements in $A$ and $B$, resulting in $A_{50,100}, B_{50,100}$.
+        \item Goto step 3 using the bisected sets $A_{50,100}, B_{50,100}$.
+      \end{itemize}
+   \end{enumerate}
+
+\item Find optimal parameters for box test:
+  In the former steps, we approximated the minimum amount of measurements.
+  Did the algorithm ever enter step \textcolor{red}{3(d)}, i.e. was the amount of measurements
+  reduced at least once?
+  \begin{enumerate}
+    \item If yes, then we just slipped below the minimum amount of required measurements.
+    Now undo step \textcolor{red}{3(d)i} (double the size of $A,B$, i.e. use $A_{50,100}$ instead of
+    $A_{75,100}$. In the next step, we find the optimal box test parameters. 
+    Loop over all possible boxes with $p_l,p_h\in \mathbb{N}: 0 \leq p_l < p_h \leq 100$,
+    example:\\ $(0,1), (0,2), \ldots (0,100), (1,2), (1,3), \ldots, (1,100), (2,3), \ldots, (99,100)$:
+
+      \begin{enumerate}
+        \item perform the box test, i.e. $\id{bt}(\hat{A}, \hat{B}, [p_l], [p_h])$.
+        \item If the box test returns \id{false}, continue in the
+          loop with the next box. If the loop is finished, go to step 5.
+        \item If the box test returns \id{true}, remember the parameters ($p_l,p_h$) of the box and the
+          ``size'' of the box ($p_l-p_h$). Only remember the biggest box and return this to the user after
+          all box test parameters were tested. Afterwards, the user knows the minimum amount of measurements
+          and the optimal box test parameters.
+        \end{enumerate}
+    \item If no, return that the timing measurements $A,B$ have no significant differences. Tell
+    user that he might need to perform more measurements.
+  \end{enumerate}
+
+
+\item Validation of calibration phase:\\
+  In step 3, 4, and 5, we recursively bisected the sets $A,B$ to find the approximate minimum amount of
+  measurements and the optimal box parameters. We now validate these results on the residual measurements. 
+  \begin{enumerate}
+    \item Split $A,B$ in a way such that each subset has the minimum amount of measurements. For example, let
+      $|A|=1000$ and the minimum amount of measurements be $50$. Then $A$ can be split in 20
+      subsets $A_1, A_2, \ldots, A_20$. There $n$ subsets, each with 
+      $$n=\frac{|A|}{\texttt{minimum amount of measurements}}$$.
+      The residual measurements are not used in this step. As the first measurements of a datasets often
+      are more noisy than the following measurements, the residual measurements should be the first 
+      measurements.
+    \item run the box test on $A_n,B_n$ and verify that the optimal box in all subsets do NOT overlap.
+      If it overlaps, double the size of $A,B$ and go back to step 4(a).
+    \item Run the box test on $A_n,A_n$ and verify that the optimal box in all subsets DO overlap
+      If it does not overlap, double the size of $A,B$ and go back to step 4(a).
+    \item Run the box test on $B_n,B_n$ and verify that the optimal box in all subsets DO overlap
+      If it does not overlap, double the size of $A,B$ and go back to step 4(a).
+  \end{enumerate}
+
+
+\item Reporting: Print out the following information (example values):
+  \begin{enumerate}
+    \item The usual PDF report
+    \item On stdout with some ASCII art for $s_1$\textless $s_2$ and $s_2$\textless $s_1$: 
+    \begin{enumerate}
+    	\item Approximate minimum amount of required measurements: 123
+    	\item i for optimal box: 5
+    	\item j for optimal box: 11
+    \end{enumerate}
+  \end{enumerate}
+\end{enumerate}
+
+
+% \bibliographystyle{abbrv}
+% \bibliography{main}
+
+\end{document}
