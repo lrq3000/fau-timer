@@ -35,7 +35,7 @@
 	<target name="create_run_jar">
 		<jar destfile="ReportingTool.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
-				<attribute name="Main-Class" value="main.Main" />
+				<attribute name="Main-Class" value="de.fau.pi1.timerReporter.main.Main" />
 				<attribute name="Class-Path" value="." />
 			</manifest>
 			<fileset dir="bin" />
