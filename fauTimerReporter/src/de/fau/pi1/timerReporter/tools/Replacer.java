@@ -67,7 +67,7 @@ public class Replacer {
 			content = null;
 			System.gc();
 		} catch (FileNotFoundException e) {
-			logger.warning("Error replacer doesn´t find the template " + input + ".");
+			logger.warning("Error replacer doesn't find the template " + input + ".");
 			e.printStackTrace();
 			System.exit(1);
 		} catch (IOException e) {
