@@ -25,7 +25,12 @@ public class ReaderCsv extends Reader{
 	String inputFile = null;
 
 	public ReaderCsv(){
-		this.inputFile = Conf.get("inputFile");
+		if(Conf.get("inputFile") != null) {
+			this.inputFile = Conf.get("inputFile");
+		} else {
+			logger.warning("You have to specify an input file.");	
+			System.exit(1);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -52,7 +57,7 @@ public class ReaderCsv extends Reader{
 						splitArray[i] = splitArray[i].substring(1, splitArray[i].length()-1);
 					}
 				}
-				
+
 				try{
 					if(splitArray.length == 3) {
 						newTime = Long.parseLong(splitArray[2]);
@@ -67,9 +72,9 @@ public class ReaderCsv extends Reader{
 					logger.warning("NumberFormatException in line " + lineCounter + 1 + ": " + nfe.getMessage());	
 					System.exit(1);
 				}
-				
+
 				Secret secret = secretMap.get(secretName);
-				
+
 				if(secret != null) {
 					Time time = new Time(lineCounter, secret.getTimes().size(), newTime);
 					secret.addTime(time);
@@ -80,7 +85,7 @@ public class ReaderCsv extends Reader{
 					Time time = new Time(lineCounter, newSecret.getTimes().size(), newTime);
 					newSecret.addTime(time);
 				}
-				
+
 				++lineCounter;
 			}
 		} catch (FileNotFoundException e) {

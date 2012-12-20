@@ -57,7 +57,8 @@ public class Conf {
 	}
 
 	/**
-	 * This method returns string with the entered key.
+	 * This method returns string with the entered key or null if key is not
+	 * set.
 	 * 
 	 * @param key
 	 * @return String
@@ -71,7 +72,19 @@ public class Conf {
 	 * the hash map conf.<br />
 	 * 
 	 * Possible keys, that can be put:<br />
-	 * - inputFile : Path to the CSV file containing the measurements<br />
+	 * 
+	 * -pdflatexPath: Path to the directory where pdflatex is located.<br />
+	 * -makeindexPath: Path to the directory where makeindex is located.<br />
+	 * -gnuplot: Path to the directory where gnuplot is located.<br />
+	 * -inputFile: Path and name of the input file containing the measurements.<br />
+	 * -name: Name of the final PDF report.<br />
+	 * -numBin: Number of bins at the x-axis of histograms.<br />
+	 * -scale: Set the scale of some plots to logarithmic (l) or (q). Leave this blank to use a normal scale.<br />
+	 * -lowerBound: Lower bound of the user input measurement filter (default is 0.05).<br />
+	 * -upperBound: Upper bound of the user input measurement filter (default is 0.10).<br />
+	 * -lowerOptimalBound: Lower bound of the optimal box. The lower optimal box must be smaller than the upper optimal box. [0.0-0.99] (no default value).<br />
+	 * -upperOptimalBound: Upper bound of the optimal box. The upper optimal box must be bigger than the lower optimal box. [0.01-1.0] (no default value).<br />
+	 * -verbose: Option to start a finer logging.<br />
 	 * 
 	 * @param key
 	 * @param value
