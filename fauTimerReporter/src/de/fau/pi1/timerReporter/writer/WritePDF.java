@@ -106,10 +106,10 @@ public class WritePDF extends Writer {
 			toReplace = toReplace.replaceAll("::name:::", plotPaths.getName().replaceAll("([\\\\{}_\\^#&$%~])", "\\$0"));
 			toReplace = toReplace.replaceAll("::lowerBound:::", Matcher.quoteReplacement(plotPaths.getLowerBoundAsString()));
 			toReplace = toReplace.replaceAll("::upperBound:::", Matcher.quoteReplacement(plotPaths.getUpperBoundAsString()));
-			toReplace = toReplace.replaceAll("::scatterplot:::", "../../" + this.report + "/images/" + Matcher.quoteReplacement(plotPaths.getPdfPaths().get(0)));
-			toReplace = toReplace.replaceAll("::boxPlot:::", "../../" + this.report + "/images/" + Matcher.quoteReplacement(plotPaths.getPdfPaths().get(1)));
-			toReplace = toReplace.replaceAll("::cdf:::", "../../" + this.report + "/images/" + Matcher.quoteReplacement(plotPaths.getPdfPaths().get(2)));
-			toReplace = toReplace.replaceAll("::histogram:::", "../../" + this.report + "/images/" + Matcher.quoteReplacement(plotPaths.getPdfPaths().get(3)));
+			toReplace = toReplace.replaceAll("::scatterplot:::", "../../" + this.report + "/images/" + Matcher.quoteReplacement(plotPaths.getPngPaths().get(0)));
+			toReplace = toReplace.replaceAll("::boxPlot:::", "../../" + this.report + "/images/" + Matcher.quoteReplacement(plotPaths.getPngPaths().get(1)));
+			toReplace = toReplace.replaceAll("::cdf:::", "../../" + this.report + "/images/" + Matcher.quoteReplacement(plotPaths.getPngPaths().get(2)));
+			toReplace = toReplace.replaceAll("::histogram:::", "../../" + this.report + "/images/" + Matcher.quoteReplacement(plotPaths.getPngPaths().get(3)));
 		}
 		replacer.put("results", toReplace);
 		
