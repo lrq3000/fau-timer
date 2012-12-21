@@ -62,7 +62,7 @@ public class Main {
 
 		// starts the evaluation phase
 		StatisticEvaluation statisticEvaluation = new StatisticEvaluation(dataset, plotPool);
-		
+	
 		if(Conf.get("upperOptimalBound") != null && Conf.get("lowerOptimalBound") != null) {
 			double[] userInputOptimalBox = new double[2];
 			userInputOptimalBox[0] = Double.parseDouble(Conf.get("lowerOptimalBound"));
@@ -71,7 +71,8 @@ public class Main {
 		}
 		
 		statisticEvaluation.calibrationPhase();
-		statisticEvaluation.printBoxTestResults(new File(report + Folder.getFileSep() + "BoxTestResult.csv"));
+		
+		statisticEvaluation.printBoxTestResults(new File(report + Folder.getFileSep() + FileId.getId() + "-BoxTestResult.csv"));
 
 		// store the time lines
 		ArrayList<String> timelineNames = statisticEvaluation.storeTimelines(report + sep + "images" + sep);

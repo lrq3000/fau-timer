@@ -36,6 +36,14 @@ public class BoxTestResults {
 		this.optimalBox = optimalBox;
 	}
 
+	/**
+	 * This method saves the data into the box test result.
+	 * @param smallestSize
+	 * @param confidenceInterval
+	 * @param subsetOverlapA
+	 * @param subsetOverlapB
+	 * @param significantDifferent
+	 */
 	public void saveValidation(int smallestSize, double confidenceInterval, ArrayList<String> subsetOverlapA, ArrayList<String> subsetOverlapB, ArrayList<String> significantDifferent) {
 		this.smallestSize.add(smallestSize);
 		this.confidenceInterval.add(confidenceInterval);
@@ -44,6 +52,12 @@ public class BoxTestResults {
 		this.significantDifferent.add(significantDifferent);
 	}
 
+	/**
+	 * This method prints the box test results into the
+	 * output file.
+	 * 
+	 * @param outputFile
+	 */
 	public void printBoxTestResult(File outputFile) {
 		String output = "";
 		for(int i = 0; i < smallestSize.size(); ++i){
@@ -63,10 +77,18 @@ public class BoxTestResults {
 		}
 	}
 
+	/**
+	 * This method counts how often the string exists
+	 * in the array list.
+	 * 
+	 * @param validationResults
+	 * @param valid
+	 * @return
+	 */
 	public int countValid(ArrayList<String> validationResults, String valid) {
 		int counter = 0;
 		for (String validate : validationResults) {
-			if(validate == valid) {
+			if(validate.equals(valid)) {
 				++counter;
 			}
 		}

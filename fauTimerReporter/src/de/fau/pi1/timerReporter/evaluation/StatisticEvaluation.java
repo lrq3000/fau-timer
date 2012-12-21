@@ -95,7 +95,7 @@ public class StatisticEvaluation {
 							int smallestSize = searchSmallestSize(secretA, secretB);
 							this.openValidationPhase(secretA, secretB, smallestSize, this.optimalBox);
 						}
-						
+
 						this.optimalBox =  new double[2];
 						this.optimalBox[0] = 0.0;
 						this.optimalBox[1] = 0.0;
@@ -116,7 +116,7 @@ public class StatisticEvaluation {
 			}
 		}
 	}
-	
+
 	/**
 	 * This method provides only the validation phase with
 	 * an inputed smallest size.
@@ -132,7 +132,7 @@ public class StatisticEvaluation {
 						if(searchOptimalBox(secretA, secretB)) {
 							this.openValidationPhase(secretA, secretB, smallestSize, this.optimalBox);
 						}
-						
+
 						this.optimalBox =  new double[2];
 						this.optimalBox[0] = 0.0;
 						this.optimalBox[1] = 0.0;
@@ -217,14 +217,6 @@ public class StatisticEvaluation {
 
 			++isSmallestSizeBisected;
 
-//			if(bisector == 1) {
-//				break;
-//			}
-
-			if(timesA.size() <= 10 || timesB.size() <= 10) {
-				break;
-			}
-			
 			bisector -= (bisector / 2);
 
 			timesA = secretA.getBisectedTimes((int)(secretA.getTimes().size() - (secretA.getTimes().size() * bisector / 100.0)));
@@ -232,6 +224,10 @@ public class StatisticEvaluation {
 
 			Collections.sort(timesA);
 			Collections.sort(timesB);
+			
+			if(timesA.size() <= 10 || timesB.size() <= 10) {
+				break;
+			}
 
 		} while(BoxTest.boxTest(timesA, timesB)); // tests if a box is significant different
 
@@ -239,8 +235,6 @@ public class StatisticEvaluation {
 		// because both secrets contains the smallest size
 		if(isSmallestSizeBisected != 1) {
 			logger.info(secretA.getName() + " < " + secretB.getName() + ": amount of minimal measures per secret: " + smallestSize); 
-		} else {
-	//		smallestSize = 0;
 		}
 
 		return smallestSize;
@@ -261,9 +255,7 @@ public class StatisticEvaluation {
 
 		if(this.validationPhase(secretA, secretB, smallestSize, optimalBox)) {
 			logger.info(secretA.getName() + " < " + secretB.getName() + ": VALID amount of minimal measures per secret: " + smallestSize);
-			System.out.println("hier");
 		} else {
-			System.out.println("hier2");
 			newSmallestSize = this.doubleSmallestSize(secretA, secretB, smallestSize);
 			if(newSmallestSize != 0) {
 				this.openValidationPhase(secretA, secretB, newSmallestSize, optimalBox);
@@ -295,7 +287,7 @@ public class StatisticEvaluation {
 		} else {
 			numberSubsets = (secretB.getTimes().size() / smallestSize);
 		}
-		System.out.println("test");
+
 		// rest of the size modulo all subsets
 		int restA = secretA.getTimes().size() % (numberSubsets * smallestSize);
 		int restB = secretB.getTimes().size() % (numberSubsets * smallestSize);
@@ -308,6 +300,9 @@ public class StatisticEvaluation {
 		ArrayList<String> validateSubsetSignificantDifferent = new ArrayList<String>();
 		ArrayList<String> validateSubsetOverlapA = new ArrayList<String>();
 		ArrayList<String> validateSubsetOverlapB = new ArrayList<String>();
+		ArrayList<Time> prevSubsetA = new ArrayList<Time>();
+		ArrayList<Time> prevSubsetB = new ArrayList<Time>();
+
 
 		for (int i = 0; i < numberSubsets; ++i) {
 
@@ -327,29 +322,37 @@ public class StatisticEvaluation {
 				//logger.info("subset " + i + ": wrong result");
 				++countInvalid;
 			}
+			
+			if(i != 0) {
+				if (BoxTest.boxTestOverlap(prevSubsetA, subsetA, optimalBox)) {
+					validateSubsetOverlapA.add("o");
 
-			if (BoxTest.boxTestOverlap(subsetA, subsetA, optimalBox)) {
-				validateSubsetOverlapA.add("o");
+				} else {
+					validateSubsetOverlapA.add("x");
+					//logger.info("subset " + i + ": only significant different");
+					++countInvalid;
+				} 
 
-			} else {
-				validateSubsetOverlapA.add("x");
-				//logger.info("subset " + i + ": only significant different");
-				++countInvalid;
-			} 
+				if (BoxTest.boxTestOverlap(prevSubsetB, subsetB, optimalBox)) {
+					validateSubsetOverlapB.add("o");
+					//logger.info("subset " + i + ": right result");
 
-			if (BoxTest.boxTestOverlap(subsetB, subsetB, optimalBox)) {
-				validateSubsetOverlapB.add("o");
-				//logger.info("subset " + i + ": right result");
-
-			} else {
-				validateSubsetOverlapB.add("x");
-				//logger.info("subset " + i + ": only significant different, subset A overlaps");
-				++countInvalid;
+				} else {
+					validateSubsetOverlapB.add("x");
+					//logger.info("subset " + i + ": only significant different, subset A overlaps");
+					++countInvalid;
+				}
 			}
 
 			if(countInvalid > 0) {
 				++countWrongResults;
 			}
+
+			prevSubsetA = new ArrayList<Time>();
+			prevSubsetB = new ArrayList<Time>();
+
+			prevSubsetA = subsetA;
+			prevSubsetB = subsetB;
 		}
 
 		double confidenceInterval = 100 - (countWrongResults * 100 / numberSubsets);
