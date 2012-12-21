@@ -92,8 +92,8 @@ public class StatisticEvaluation {
 				if(secretA != secretB) {
 					if(this.optimalBox[0] == 0.0 && this.optimalBox[1] == 0.0) {
 						if(searchOptimalBox(secretA, secretB)) {
-							this.boxTestResults.add(new BoxTestResults(this.dataSet.getInputFile(), secretA, secretB, this.optimalBox));
-							this.openValidationPhase(secretA, secretB, searchSmallestSize(secretA, secretB), this.optimalBox);
+							int smallestSize = searchSmallestSize(secretA, secretB);
+							this.openValidationPhase(secretA, secretB, smallestSize, this.optimalBox);
 						}
 						
 						this.optimalBox =  new double[2];
@@ -101,7 +101,6 @@ public class StatisticEvaluation {
 						this.optimalBox[1] = 0.0;
 
 					} else {
-						this.boxTestResults.add(new BoxTestResults(this.dataSet.getInputFile(), secretA, secretB, this.optimalBox));
 						int smallestSize = searchSmallestSize(secretA, secretB);
 						if(smallestSize != 0) {
 							plotPool.plot("Filtered Measurments: User Input Optimal Box (" + secretA.getName() + "-" + secretB.getName() + ")", this.optimalBox[0], this.optimalBox[1]);
@@ -117,7 +116,40 @@ public class StatisticEvaluation {
 			}
 		}
 	}
+	
+	/**
+	 * This method provides only the validation phase with
+	 * an inputed smallest size.
+	 * 
+	 * @param int smallest size 
+	 */
+	public void onlyValidationPhase(int smallestSize) {
+		// iterate over all secret combination
+		for (Secret secretA : this.dataSet.getSecrets()) {
+			for (Secret secretB : this.dataSet.getSecrets()) {
+				if(secretA != secretB) {
+					if(this.optimalBox[0] == 0.0 && this.optimalBox[1] == 0.0) {
+						if(searchOptimalBox(secretA, secretB)) {
+							this.openValidationPhase(secretA, secretB, smallestSize, this.optimalBox);
+						}
+						
+						this.optimalBox =  new double[2];
+						this.optimalBox[0] = 0.0;
+						this.optimalBox[1] = 0.0;
 
+					} else {
+						if(smallestSize != 0) {
+							plotPool.plot("Filtered Measurments: User Input Optimal Box (" + secretA.getName() + "-" + secretB.getName() + ")", this.optimalBox[0], this.optimalBox[1]);
+
+							this.openValidationPhase(secretA, secretB, smallestSize, this.optimalBox);
+						} else {
+							logger.warning(secretA.getName() + " < " + secretB.getName() + ": no significant different result found! You need to measure more times.");
+						}
+					}
+				}
+			}
+		}
+	}
 
 	/**
 	 * This method searchs only the optimal box and returns
@@ -168,7 +200,7 @@ public class StatisticEvaluation {
 		ArrayList<Time> timesA = secretA.getTimes();
 		ArrayList<Time> timesB = secretB.getTimes();
 
-		int bisector = 100; 
+		float bisector = 100; 
 		int isSmallestSizeBisected = 0;
 
 		do {
@@ -185,10 +217,14 @@ public class StatisticEvaluation {
 
 			++isSmallestSizeBisected;
 
-			if(bisector == 1) {
+//			if(bisector == 1) {
+//				break;
+//			}
+
+			if(timesA.size() <= 10 || timesB.size() <= 10) {
 				break;
 			}
-
+			
 			bisector -= (bisector / 2);
 
 			timesA = secretA.getBisectedTimes((int)(secretA.getTimes().size() - (secretA.getTimes().size() * bisector / 100.0)));
@@ -220,12 +256,14 @@ public class StatisticEvaluation {
 	 * @param optimalBox
 	 */
 	private void openValidationPhase(Secret secretA, Secret secretB, int smallestSize, double[] optimalBox) {
+		this.boxTestResults.add(new BoxTestResults(this.dataSet.getInputFile(), secretA, secretB, this.optimalBox));
 		int newSmallestSize = 0;
 
 		if(this.validationPhase(secretA, secretB, smallestSize, optimalBox)) {
 			logger.info(secretA.getName() + " < " + secretB.getName() + ": VALID amount of minimal measures per secret: " + smallestSize);
-
+			System.out.println("hier");
 		} else {
+			System.out.println("hier2");
 			newSmallestSize = this.doubleSmallestSize(secretA, secretB, smallestSize);
 			if(newSmallestSize != 0) {
 				this.openValidationPhase(secretA, secretB, newSmallestSize, optimalBox);
@@ -257,7 +295,7 @@ public class StatisticEvaluation {
 		} else {
 			numberSubsets = (secretB.getTimes().size() / smallestSize);
 		}
-
+		System.out.println("test");
 		// rest of the size modulo all subsets
 		int restA = secretA.getTimes().size() % (numberSubsets * smallestSize);
 		int restB = secretB.getTimes().size() % (numberSubsets * smallestSize);
