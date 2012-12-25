@@ -146,7 +146,12 @@ public class WritePDF extends Writer {
 		try {
 			p.waitFor();				
 			if(p.exitValue() != 0) {
-				logger.warning("ERROR while calling makeindex: " + p.exitValue());
+				StringBuffer sb = new StringBuffer();
+				BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				String temp;
+				while ((temp = br.readLine()) != null)
+					sb.append(temp);
+				logger.warning("ERROR while calling makeindex: " + p.exitValue() + ". --> " + sb);
 				throw new RuntimeException("ERROR while calling makeindex: " + p.exitValue());
 			}
 		} catch (InterruptedException e) {
