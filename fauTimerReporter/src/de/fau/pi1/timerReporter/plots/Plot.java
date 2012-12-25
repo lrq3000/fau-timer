@@ -56,20 +56,22 @@ public abstract class Plot {
 			process.waitFor();
 			if(process.exitValue() != 0) {
 				BufferedReader br = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-				String str = new String();
-				while ((str = br.readLine()) != null)
-					System.out.println(str);
+				StringBuffer str = new StringBuffer();
+				String temp;
+				while ((temp = br.readLine()) != null)
+					str.append(temp);
 				br.close();
 
-				throw new RuntimeException("Error while running gnuplot: " + process.exitValue());
+				throw new RuntimeException("Error while running gnuplot: " + process.exitValue() +
+						".\nMessage: " + str);
 
 			}
 			return true;
 		} catch (IOException e) {
-			logger.warning("Error running gnuplot.");
+			logger.warning(e.getMessage());
 			return false;
 		} catch (InterruptedException e) {
-			logger.warning("Error running gnuplot.");
+			logger.warning(e.getMessage());
 			return false;
 		}
 	}
