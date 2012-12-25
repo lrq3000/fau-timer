@@ -5,9 +5,9 @@ import java.util.Collections;
 
 
 /**
- * An object of this class represents one secret with a list of times. 
- * The time list should be sorted by times ascending order. But every 
- * time knows his successor time with the following secret id, 
+ * An object of this class represents one secret with a list of timings. 
+ * The time list should be sorted by timings in ascending order. Every 
+ * timing knows his successor time with the following secret id, 
  * therefore it is possible to order back into secret id order. Also,
  * a secret knows the first and the last time in secret id order.
  * 
@@ -39,7 +39,7 @@ public class Secret {
 	}
 
 	/**
-	 * This method adds a new time. 
+	 * This method adds a new timing. 
 	 * @param time
 	 */
 	public void addTime(Time time) {

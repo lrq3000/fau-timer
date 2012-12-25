@@ -6,7 +6,7 @@ import de.fau.pi1.timerReporter.reader.Reader;
 
 /**
  * An object of this class represents one data set. This data set has a list 
- * of all secrets. The data set can construct with a list of secrets or a 
+ * of all secrets. The data set can be constructed with a list of secrets or a 
  * reader to read in the secrets.
  * 
  * @FauTimerReporter
@@ -30,8 +30,8 @@ public class Dataset {
 	}
 	
 	/**
-	 * This method iterates about all secrets and finds the
-	 * maximum of all times. This method is used in the 
+	 * This method iterates over all secrets and finds the
+	 * maximum of all timings. This method is used in the 
 	 * histogram class.
 	 * 
 	 * @return long value of the time
@@ -47,11 +47,11 @@ public class Dataset {
 	}
 	
 	/**
-	 * This method iterates about all secrets and finds the
-	 * minimum of all times. This method is used in the 
+	 * This method iterates over all secrets and finds the
+	 * minimum of all timings. This method is used in the 
 	 * histogram class.
 	 * 
-	 * @return long value of the time
+	 * @return long value containing the timing
 	 */
 	public static Long findRangeMin(ArrayList<Secret> secrets) {
 		Long min = new Long(0);

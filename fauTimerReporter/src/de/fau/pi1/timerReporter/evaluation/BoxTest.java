@@ -53,10 +53,10 @@ public class BoxTest {
 				Long lowerTimeB = timesB.get(lowerPosB).getTime();
 				Long upperTimeB = timesB.get(upperPosB).getTime();
 
-				if(isSignificantSmaller(upperTimeA, lowerTimeB)) {
+				if(isSignificantlySmaller(upperTimeA, lowerTimeB)) {
 					if(i != 0 && j != 1) {
-						if(!isSignificantDifferent(prevLowerTimeA, prevUpperTimeA, lowerTimeA, upperTimeA) &&
-								!isSignificantDifferent(prevLowerTimeB, prevUpperTimeB, lowerTimeB, upperTimeB)) {
+						if(!isSignificantlyDifferent(prevLowerTimeA, prevUpperTimeA, lowerTimeA, upperTimeA) &&
+								!isSignificantlyDifferent(prevLowerTimeB, prevUpperTimeB, lowerTimeB, upperTimeB)) {
 							return true;
 						}
 					} else {
@@ -97,7 +97,7 @@ public class BoxTest {
 		Long upperTimeA = timesA.get(upperPosA).getTime();
 		Long lowerTimeB = timesB.get(lowerPosB).getTime();
 
-		if(isSignificantSmaller(upperTimeA, lowerTimeB)) {
+		if(isSignificantlySmaller(upperTimeA, lowerTimeB)) {
 			return true;
 		} 
 		return false;
@@ -130,7 +130,7 @@ public class BoxTest {
 		Long lowerTimeB = timesB.get(lowerPosB).getTime();
 		Long upperTimeB = timesB.get(upperPosB).getTime();
 
-		if(!isSignificantDifferent(lowerTimeA, upperTimeA, lowerTimeB, upperTimeB)) {
+		if(!isSignificantlyDifferent(lowerTimeA, upperTimeA, lowerTimeB, upperTimeB)) {
 			return true;
 		} 
 
@@ -174,10 +174,10 @@ public class BoxTest {
 				Long lowerTimeB = timesB.get(lowerPosB).getTime();
 				Long upperTimeB = timesB.get(upperPosB).getTime();
 
-				if(isSignificantSmaller(upperTimeA, lowerTimeB)) {
+				if(isSignificantlySmaller(upperTimeA, lowerTimeB)) {
 					if(i != 0 && j != 1) {
-						if(!isSignificantDifferent(prevLowerTimeA, prevUpperTimeA, lowerTimeA, upperTimeA) &&
-								!isSignificantDifferent(prevLowerTimeB, prevUpperTimeB, lowerTimeB, upperTimeB)) {
+						if(!isSignificantlyDifferent(prevLowerTimeA, prevUpperTimeA, lowerTimeA, upperTimeA) &&
+								!isSignificantlyDifferent(prevLowerTimeB, prevUpperTimeB, lowerTimeB, upperTimeB)) {
 							incrementTimeline(i, j, timeline);
 							if ((upperBound - lowerBound) < (j - i)) {
 								lowerBound = i;
@@ -216,13 +216,13 @@ public class BoxTest {
 	 * @param upperTimeB
 	 * @return boolean, if the boxes significant different
 	 */
-	private static boolean isSignificantDifferent(Long lowerTimeA, Long upperTimeA, Long lowerTimeB, Long upperTimeB) {
+	private static boolean isSignificantlyDifferent(Long lowerTimeA, Long upperTimeA, Long lowerTimeB, Long upperTimeB) {
 		return ( (upperTimeA.compareTo(lowerTimeB) < 0) || (upperTimeB.compareTo(lowerTimeA) < 0) );
 	}
 
 	/**
 	 * This method returns the significant differences value. If the
-	 * boxes are significant smaller, the result is true, else the 
+	 * boxes are significant smaller, the result is true, otherwise the 
 	 * boxes aren't significant or bigger. 
 	 * 
 	 * @param lowerTimeA
@@ -231,12 +231,12 @@ public class BoxTest {
 	 * @param upperTimeB
 	 * @return boolean, if the boxes significant smaller
 	 */
-	private static boolean isSignificantSmaller(Long upperTimeA, Long lowerTimeB) {
+	private static boolean isSignificantlySmaller(Long upperTimeA, Long lowerTimeB) {
 		return (upperTimeA.compareTo(lowerTimeB) < 0);
 	}
 
 	/**
-	 * This method increments the time line counter. Every significant smaller
+	 * This method increments the time line counter. Every significantly smaller
 	 * box of the measurement increases the related boxes in the time line. 
 	 * 
 	 * @param lowerBound

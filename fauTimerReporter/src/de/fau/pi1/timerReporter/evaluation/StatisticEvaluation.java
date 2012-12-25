@@ -18,12 +18,12 @@ import de.fau.pi1.timerReporter.tools.Folder;
 /**
  * An object of this class performs the statistic evaluation. Therefore, it starts
  * the calibration phase. This phase searches the optimal percentile boxes of the 
- * measurement. Than, it approximates to the smallest possible size of the measurement.
+ * measurement. Then, it approximates to the smallest possible size of the measurement.
  * 
- * The validation phase validates the results by graduating the measurement in 
- * smallest ranges and starting the box test above the ranges.
+ * The validation phase validates the results by splitting the measurement in 
+ * smallest ranges and starting the box test over the ranges.
  * 
- * If one range isn't significant different, the validation phase sets the smallest
+ * If one range isn't significantly different, the validation phase sets the smallest
  * size up and begins again.
  * 
  * @FauTimerReporter
