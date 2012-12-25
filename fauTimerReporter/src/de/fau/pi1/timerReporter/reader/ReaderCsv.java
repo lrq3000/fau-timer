@@ -52,6 +52,10 @@ public class ReaderCsv extends Reader{
 
 			while ((line = data.readLine()) != null) {
 				splitArray = line.split(";");
+				if(splitArray.length == 1) {
+					// If there are no ';'-separated values, try ','-separated
+					splitArray = line.split(",");
+				}
 				for (int i = 0; i < splitArray.length; i++) {
 					if(splitArray[i].startsWith("\"") && splitArray[i].endsWith("\"")) {
 						splitArray[i] = splitArray[i].substring(1, splitArray[i].length()-1);
