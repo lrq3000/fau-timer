@@ -50,8 +50,12 @@ public abstract class Plot {
 	 */
 	private boolean doPlot(File replacedTemplate) {
 		try{
-			String command = Main.getGnuplotExecutable() + " " + replacedTemplate.getAbsolutePath();
-			Process process = Runtime.getRuntime().exec(command);
+			String cmdarray[] = new String[2];
+			cmdarray[0] = Main.getGnuplotExecutable();
+			cmdarray[1] = replacedTemplate.getAbsolutePath();
+			
+			Process process = Runtime.getRuntime().exec(cmdarray);
+			
 			Thread.sleep(1000);
 			process.waitFor();
 			if(process.exitValue() != 0) {
