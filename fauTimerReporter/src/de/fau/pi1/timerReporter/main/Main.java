@@ -86,6 +86,7 @@ public class Main {
 		try {
 			new WritePDF(dataset, report, plotPool, timelineNames).write();
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.warning("Error while writing the pdf.");
 			System.exit(1);
 		}

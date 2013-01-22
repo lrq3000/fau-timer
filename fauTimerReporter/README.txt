@@ -22,7 +22,7 @@ How to use the Reporting Tool
 	$java -jar ReportingTool.jar -help
 
 - to start the Reporting Tool with default parameter:
-	$java -jar ReportingTool.jar -inputFile=/path/to/file -name=NameofMeasurement
+	$java -jar ReportingTool.jar --inputFile=/path/to/file --name=NameofMeasurement
 
 
 Default parameter
