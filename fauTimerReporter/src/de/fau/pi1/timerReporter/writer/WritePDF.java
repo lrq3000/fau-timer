@@ -38,11 +38,19 @@ public class WritePDF extends Writer {
 		this.report = report;
 		this.plotPool = plotPool;
 		this.timelineNames = timelineNames;
-		
+
 		Folder.checkDir(report + sep);
 		Folder.checkDir("reportingTool_tmp" + sep);
+
+		//check png files exists
+		for (PlotPaths plotPaths : this.plotPool.getPlotPaths()) {
+			checkImages(this.report + "/images/" , plotPaths.getPngPaths());
+		}
+
+		//check png files exists
+		checkImages(this.report + "/images/" , timelineNames);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see writer.Writer#write()
 	 */
@@ -56,25 +64,25 @@ public class WritePDF extends Writer {
 		}
 		tmpDir.mkdir();
 		logger.log(Level.FINE, "Writing tex files to " + tmpDir.getPath());
-		
+
 		File output = new File(this.report + sep);
 		if (output.exists()) {
 			output.delete();
 		}
-		
+
 		File makeIndex = new File(Conf.get("makeindexPath"));
 		File pdfLatex = new File(Conf.get("pdflatexPath"));
 
 		HashMap<String, String> replacer = new HashMap<String, String>();
 		replacer.put("name", dataSet.getName().replaceAll("([\\\\{}_\\^#&$%~])", "\\$1"));
-		
+
 		replacer.put("Spalte1", "Secret");
 		replacer.put("Spalte2", "Amount Measurement");
 		replacer.put("Spalte3", "MIN");
 		replacer.put("Spalte4", "MAX");
 		replacer.put("Spalte5", "Median");
 		replacer.put("Spalte6", "AVG");
-		
+
 		StringBuilder table = new StringBuilder();
 		for (int i = 0; i < this.dataSet.getSecrets().size(); i++) {
 			table.append(this.dataSet.getSecrets().get(i).getName().replaceAll("([\\\\{}_\\^#&$%~])", "\\$0") + "&"
@@ -88,16 +96,16 @@ public class WritePDF extends Writer {
 			table.append("\\hline\n");
 		}
 		replacer.put("tableContent", table.toString());
-		
+
 		//TIMELINE
 		String timelineToReplace = new String();
 		for(int i = 0; i < this.timelineNames.size(); ++i) {
 			timelineToReplace += Replacer.readTemplate("templates" + sep + "latex" + sep + "timeline.tpl");
 			timelineToReplace = timelineToReplace.replaceAll("::name:::", timelineNames.get(i).replaceAll("([\\\\{}_\\^#&$%~])", "\\$0"));
-			timelineToReplace = timelineToReplace.replaceAll("::path:::", "../../" + this.report + "/images/" + "timeline-" + Matcher.quoteReplacement(timelineNames.get(i)) + ".png");
+			timelineToReplace = timelineToReplace.replaceAll("::path:::", "../../" + this.report + "/images/" + Matcher.quoteReplacement(timelineNames.get(i)));
 		}
 		replacer.put("timelines", timelineToReplace);
-		
+
 		//Plots
 		String toReplace = new String();
 		for (PlotPaths plotPaths : this.plotPool.getPlotPaths()) {
@@ -112,7 +120,7 @@ public class WritePDF extends Writer {
 			toReplace = toReplace.replaceAll("::histogram:::", "../../" + this.report + "/images/" + Matcher.quoteReplacement(plotPaths.getPngPaths().get(3)));
 		}
 		replacer.put("results", toReplace);
-		
+
 		File tmpOutput = new File(tmpDir, "Report.tex");
 		Replacer.replace(input, tmpOutput, replacer);
 
@@ -157,7 +165,6 @@ public class WritePDF extends Writer {
 		} catch (InterruptedException e) {
 			p.destroy();
 		}
-		
 
 		// makepdf
 		cmdarray = new String[3];
@@ -196,7 +203,27 @@ public class WritePDF extends Writer {
 		// move generated pdf
 		File src = new File(tmpDir, "Report.pdf");
 		File dst = new File(output, FileId.getId() + "-report.pdf");
-		src.renameTo(dst);
-		logger.finest("Moved report to " + dst.getAbsolutePath());
+
+		if (src.renameTo(dst)) {
+			logger.finest("Moved report to " + dst.getAbsolutePath());
+		} else {
+			logger.warning("ERROR while moving report to " + dst.getAbsolutePath() + ". Report is still in the temp folder.");
+		}
+	}
+
+	/**
+	 * This method checks a list of image names if they exist.
+	 * 
+	 * @param path
+	 * @param names
+	 */
+	private void checkImages(String path, ArrayList<String> names) {
+
+		for (String name : names) {
+			if (!Folder.isImageExists(path, name)) {
+				logger.warning("Error: image file " + path + name + " doesn't exist.");
+				System.exit(1);
+			}
+		}
 	}
 }

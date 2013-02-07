@@ -61,7 +61,7 @@ public class StatisticEvaluation {
 		ArrayList<String> timelineNames = new ArrayList<String>();
 
 		for (Timeline timeline : this.timelines) {
-			String timelineName = outputPath + "timeline-" + timeline.getName() + ".png";
+			String timelineName = outputPath + timeline.getName();
 			timelineNames.add(timeline.getName());
 			timeline.store(700, 105, timelineName);
 		}
@@ -168,7 +168,7 @@ public class StatisticEvaluation {
 		ArrayList<Time> timesB = secretB.getTimes();
 
 		// first step: search optimal box
-		Timeline timeline = new Timeline(FileId.getId() + "-" + secretA.getFileName() + "-smaller-" +secretB.getFileName());
+		Timeline timeline = new Timeline("timeline-" + FileId.getId() + "-" + secretA.getFileName() + "-smaller-" +secretB.getFileName() + ".png");
 		this.timelines.add(timeline);
 		this.optimalBox = BoxTest.optimalBox(timesA, timesB, timeline);
 

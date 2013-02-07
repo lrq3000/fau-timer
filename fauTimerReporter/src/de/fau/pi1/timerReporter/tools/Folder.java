@@ -95,4 +95,17 @@ public class Folder {
 
 		return convertedString;
 	}
+	
+	/**
+	 * This method checks if the file exists with the inputed file path and file name.
+	 * 
+	 * @return boolean if the file exists
+	 */
+	public static boolean isImageExists(String prePath, String fileName) {
+		if(new File(prePath + fileName).exists()) {
+			return true;
+		} 
+		
+		return false;
+	}
 }
