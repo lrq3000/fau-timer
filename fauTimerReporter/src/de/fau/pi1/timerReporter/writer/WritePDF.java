@@ -194,7 +194,7 @@ public class WritePDF extends Writer {
 		}
 
 		// move generated pdf
-		File src = new File(tmpDir, "report.pdf");
+		File src = new File(tmpDir, "Report.pdf");
 		File dst = new File(output, FileId.getId() + "-report.pdf");
 		src.renameTo(dst);
 		logger.finest("Moved report to " + dst.getAbsolutePath());
