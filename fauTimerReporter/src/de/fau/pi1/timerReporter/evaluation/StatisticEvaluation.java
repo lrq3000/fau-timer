@@ -174,7 +174,7 @@ public class StatisticEvaluation {
 
 		if(this.optimalBox[0] != 0 || this.optimalBox[1] != 0) { 	
 			// if a optimal box found, there are significant different results!
-			logger.finest(secretA.getName() + " < " + secretB.getName() + ": optimal box " + optimalBox[0] + "-" + optimalBox[1]);
+			logger.info(secretA.getName() + " < " + secretB.getName() + ": optimal box " + optimalBox[0] + "-" + optimalBox[1]);
 			plotPool.plot("Filtered Measurments: Optimal Box (" + secretA.getName() + "-" + secretB.getName() + ")", this.optimalBox[0], this.optimalBox[1]);
 			return true;
 		} else {

@@ -28,11 +28,6 @@ public class BoxTest {
 	 */
 	public static boolean boxTest(ArrayList<Time> timesA, ArrayList<Time> timesB) {
 
-		Long prevLowerTimeA = new Long(0);
-		Long prevUpperTimeA = new Long(0);
-		Long prevLowerTimeB = new Long(0);
-		Long prevUpperTimeB = new Long(0);
-
 		for (int i = 0; i < 100; ++i) { // percentile lower bound
 			for (int j = (i + 1); j <= 100; ++j) { // percentile upper bound
 
@@ -48,25 +43,12 @@ public class BoxTest {
 					continue;
 				}
 
-				Long lowerTimeA = timesA.get(lowerPosA).getTime();
 				Long upperTimeA = timesA.get(upperPosA).getTime();
 				Long lowerTimeB = timesB.get(lowerPosB).getTime();
-				Long upperTimeB = timesB.get(upperPosB).getTime();
 
 				if(isSignificantlySmaller(upperTimeA, lowerTimeB)) {
-					if(i != 0 && j != 1) {
-						if(!isSignificantlyDifferent(prevLowerTimeA, prevUpperTimeA, lowerTimeA, upperTimeA) &&
-								!isSignificantlyDifferent(prevLowerTimeB, prevUpperTimeB, lowerTimeB, upperTimeB)) {
-							return true;
-						}
-					} else {
-						return true;
-					}
+					return true;
 				}
-				prevLowerTimeA = lowerTimeA;
-				prevUpperTimeA = upperTimeA;
-				prevLowerTimeB = lowerTimeB;
-				prevUpperTimeB = upperTimeB;
 			}
 		} 
 		return false;
@@ -149,10 +131,6 @@ public class BoxTest {
 		double[] optimalBox = new double[2];
 		int lowerBound = 0;
 		int upperBound = 0;
-		Long prevLowerTimeA = new Long(0);
-		Long prevUpperTimeA = new Long(0);
-		Long prevLowerTimeB = new Long(0);
-		Long prevUpperTimeB = new Long(0);
 
 		for (int i = 0; i < 100; ++i) { // percentile lower bound
 			for (int j = (i + 1); j <= 100; ++j) { // percentile upper bound
@@ -169,34 +147,16 @@ public class BoxTest {
 					continue;
 				}
 
-				Long lowerTimeA = timesA.get(lowerPosA).getTime();
 				Long upperTimeA = timesA.get(upperPosA).getTime();
 				Long lowerTimeB = timesB.get(lowerPosB).getTime();
-				Long upperTimeB = timesB.get(upperPosB).getTime();
 
 				if(isSignificantlySmaller(upperTimeA, lowerTimeB)) {
-					if(i != 0 && j != 1) {
-						if(!isSignificantlyDifferent(prevLowerTimeA, prevUpperTimeA, lowerTimeA, upperTimeA) &&
-								!isSignificantlyDifferent(prevLowerTimeB, prevUpperTimeB, lowerTimeB, upperTimeB)) {
-							incrementTimeline(i, j, timeline);
-							if ((upperBound - lowerBound) < (j - i)) {
-								lowerBound = i;
-								upperBound = j;
-							}
-						}
-					} else {
-						incrementTimeline(i, j, timeline);
-						if ((upperBound - lowerBound) < (j - i)) {
-							lowerBound = i;
-							upperBound = j;
-						}
+					incrementTimeline(i, j, timeline);
+					if ((upperBound - lowerBound) < (j - i)) {
+						lowerBound = i;
+						upperBound = j;
 					}
 				} 
-
-				prevLowerTimeA = lowerTimeA;
-				prevUpperTimeA = upperTimeA;
-				prevLowerTimeB = lowerTimeB;
-				prevUpperTimeB = upperTimeB;
 			}
 		}
 
